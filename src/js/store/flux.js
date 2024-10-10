@@ -1,3 +1,4 @@
+ const apiUrl = "https://swapi.dev/api"
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
@@ -12,7 +13,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 					background: "white",
 					initial: "white"
 				}
-			]
+			],
+
+			people: null,
+			planets: null
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
@@ -37,9 +41,41 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				//reset the global store
 				setStore({ demo: demo });
-			}
+			},
+
+			getPeople: async () => {
+				try {
+					const response = await fetch(`${apiUrl}/people`)
+					if(!response.ok){
+						throw new Error("error fetching people")
+					}
+					const data = await response.json()
+					setStore({people:data.results})
+				} catch (error) {
+					console.log(error)
+					setStore({people:false})
+				}
+			},
+
+			getPlanets: async () => {
+				try {
+					const response = await fetch(`${apiUrl}/planets`)
+					if(!response.ok){
+						throw new Error("error fetching planets")
+					}
+					const data = await response.json()
+					setStore({planets:data.results})
+				} catch (error) {
+					console.log(error)
+					setStore({planets:false})
+				}
+			},
+
+			
 		}
 	};
 };
 
 export default getState;
+
+
